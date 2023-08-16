@@ -38,7 +38,7 @@ def send_command(target: str, type: CommandType, payload_id, payload_args) -> No
 
 
 def generate_client_url(host: str, port: int, protocol: str = PROTOCOL) -> str:
-    return f"{protocol}://{host}:{port}/run_command"
+    return f"{protocol}://{host}:{port}"
 
 
 send_command("all", CommandType.KILL, payload_id=5, payload_args=None)
