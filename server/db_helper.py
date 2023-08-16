@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from typing import Any, Dict
 
 from fastapi import Request
-from schema import Message
+from schema import Message, Command
 from settings import CLIENT_LIVELINESS_THRESHOLD_MINUTES, DB_LOCATION
 
 
@@ -57,10 +57,11 @@ def update_command_status(message: Message):
         cursor = db_connection.cursor()
         logging.debug("Got response %s", message.get_result())
         cursor.execute(
-            "UPDATE commands SET status = ?, response = ? WHERE id = ?",
+            "UPDATE commands SET status = ?, response = ?, last_update = ? WHERE id = ?",
             (
                 message.status.value,
                 message.get_result(),
+                datetime.now(),
                 str(message.identifier),
             ),
         )
@@ -91,3 +92,18 @@ def get_command_arguments(target: str, payload_id: int):
         payload = cursor.fetchone()
 
     return client_result, payload
+
+def add_command(command: Command, payload_id:str, client_id:str):
+    with sqlite_connection(DB_LOCATION) as db_connection:
+        cursor = db_connection.cursor()
+        cursor.execute(
+                "INSERT INTO commands (id, payload_id, arguments, client_id, time_sent, type) VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    str(command.identifier),
+                    payload_id,
+                    command.arguments,
+                    client_id,
+                    datetime.now(),
+                    command.type.value,
+                ),
+            )
