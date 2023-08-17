@@ -1,17 +1,15 @@
-import sqlite3
+#!/usr/bin/python3
 
 import uvicorn
 from db_helper import update_command_status, update_or_insert_client
 from fastapi import FastAPI, Request
 from logger import LOGGING_CONFIG, setup_logger
 from schema import Message, StatusType
-from settings import DB_LOCATION, SERVER_PORT
+from settings import SERVER_PORT
 
 
 def create_listener() -> FastAPI:
     app = FastAPI()
-    db_connection = sqlite3.connect(DB_LOCATION)
-    db_connection.cursor()
 
     @app.post("/", response_model=None)
     async def get_messages(message: Message, request: Request) -> None:

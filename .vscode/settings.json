@@ -19,4 +19,5 @@
         "editor.background": "#11111A"
     },
     "zenMode.hideLineNumbers": false,
+    "python.formatting.provider": "none",
 }

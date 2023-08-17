@@ -8,20 +8,25 @@ from settings import PROTOCOL, REQUEST_TIMEOUT
 
 
 def send_command(
-    target: str, type: CommandType, payload_id: int, payload_args: Optional[List[Any]]
+    target: str,
+    type: CommandType,
+    payload_id: Optional[int] = None,
+    payload_args: Optional[List[Any]] = None,
 ) -> None:
+
     headers = {"Content-type": "application/json"}
     clients, payload_info = get_command_arguments(target, payload_id)
     for identifier, external_ip, port in clients:
-        payload, default_payload_args = payload_info
 
         if type == CommandType.KILL:
-            command = Command(identifier=identifier, type=type)
+            command = Command(type=type)
 
         elif type == CommandType.RUN:
+            if not payload_info:
+                raise ValueError("Payload not provided")
+            payload, default_payload_args = payload_info
             used_payload_args = payload_args if payload_args else default_payload_args
             command = Command(
-                identifier=identifier,
                 type=type,
                 payload=Command.string_to_base64(payload),
                 arguments=used_payload_args,
@@ -36,9 +41,16 @@ def send_command(
                 timeout=REQUEST_TIMEOUT,
             )
             if response.status_code == 200:  # noqa: PLR2004
-                add_command(
-                    command=command, client_id=identifier, payload_id=payload_id
-                )
+                if payload_id:
+                    add_command(
+                        command=command, client_id=identifier, payload_id=payload_id
+                    )
+                else:
+
+                    add_command(
+                        command=command,
+                        client_id=identifier,
+                    )
                 logging.info("Successfully sent %s", command)
             else:
                 logging.info(
@@ -50,3 +62,6 @@ def send_command(
 
 def generate_client_url(host: str, port: int, protocol: str = PROTOCOL) -> str:
     return f"{protocol}://{host}:{port}"
+
+
+# send_command(target="all", type=CommandType.KILL)

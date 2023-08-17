@@ -8,4 +8,5 @@ SERVER_PORT = 8080
 REQUEST_TIMEOUT = 5
 CLIENT_LIVELINESS_THRESHOLD_MINUTES = 600
 DB_LOCATION = Path(__file__).resolve().parents[1] / "resources" / "db.sqlite3"
+DB_ENGINE = f"sqlite:///{DB_LOCATION}"
 PROTOCOL: Literal["http", "https"] = "http"
