@@ -5,29 +5,25 @@ from db_helper import update_command_status, update_or_insert_client
 from fastapi import FastAPI, Request
 from logger import LOGGING_CONFIG, setup_logger
 from schema import Message, StatusType
-from settings import SERVER_PORT
+from settings import SERVER_HOST, SERVER_PORT
+
+app = FastAPI()
 
 
-def create_listener() -> FastAPI:
-    app = FastAPI()
-
-    @app.post("/", response_model=None)
-    async def get_messages(message: Message, request: Request) -> None:
-        if message.status == StatusType.HEARTBEAT:
-            update_or_insert_client(message, request)
-        else:
-            update_command_status(message)
-
-    return app
+@app.post("/", response_model=None)
+async def get_messages(message: Message, request: Request) -> None:
+    if message.status == StatusType.HEARTBEAT:
+        update_or_insert_client(message, request)
+    else:
+        update_command_status(message)
 
 
-if __name__ == "__main__":
-    setup_logger("c2-server")
-    uvicorn.run(
-        create_listener(),
-        host="0.0.0.0",  # noqa: S104
-        port=SERVER_PORT,
-        log_config=LOGGING_CONFIG,
-        # ssl_keyfile=str(Path("../keys/key.pem")),
-        # ssl_certfile=Path("../keys/cert.pem"),
-    )
+setup_logger("c2-server")
+uvicorn.run(
+    app,
+    host=SERVER_HOST,
+    port=SERVER_PORT,
+    log_config=LOGGING_CONFIG,
+    # ssl_keyfile=str(Path("../keys/key.pem")),
+    # ssl_certfile=Path("../keys/cert.pem"),
+)
