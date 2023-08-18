@@ -40,7 +40,7 @@ def update_or_insert_client(message: Message, request):
 def update_command_status(message: Message):
     with Session(ENGINE) as session:  # type: ignore
         command_id = str(message.identifier)
-        command = session.query(Command).filter_by(id=command_id).first()
+        command = session.query(CommandTableEntry).filter_by(id=command_id).first()
 
         if command:
             command.status = message.status.value
