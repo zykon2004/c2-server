@@ -8,10 +8,10 @@ uvicorn = "*"
 fastapi = "*"
 requests = "*"
 sqlalchemy = "*"
-sqlalchemy-stubs = "*"
 python-decouple = "*"
 
 [dev-packages]
+sqlalchemy-stubs = "*"
 
 [requires]
 python_version = "3.11"
