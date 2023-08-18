@@ -132,4 +132,4 @@ dmypy.json
 /dump.rdb
 tools*
 keys*
-# resources/db.sqlite3
+resources/db.sqlite3
