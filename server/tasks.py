@@ -2,9 +2,12 @@ import logging
 from typing import Any, List, Optional
 
 import requests
+import urllib3
 from db_helper import add_command, get_command_arguments
 from schema import Command, CommandType
 from settings import PROTOCOL, REQUEST_TIMEOUT
+
+urllib3.disable_warnings()
 
 
 def send_command(
@@ -39,6 +42,7 @@ def send_command(
                 data=command.model_dump_json(),  # type: ignore
                 headers=headers,
                 timeout=REQUEST_TIMEOUT,
+                verify=False,  # noqa: S501
             )
             if response.status_code == 200:  # noqa: PLR2004
                 if payload_id:

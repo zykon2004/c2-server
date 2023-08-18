@@ -4,7 +4,7 @@ WORKDIR /c2-server
 
 COPY ./requirements.txt requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY ./server ./server
 COPY ./resources ./resources
